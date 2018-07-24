@@ -11,6 +11,13 @@ setMethod("mold", c("eSet"), function(data){
 
 setMethod("mold", c("GRanges"), function(data){
   names(data) <- NULL
+  ## Truncated ranges will have a copy of the original ranges
+  ## this copy should be removed when molding
+  originalranges <-  colnames(mcols(rangescr)) %in% ".ori"
+  if(any(originalranges)){
+    mcols(rangescr)[originalranges] <- NULL
+  }
+ 
   df <- as.data.frame(data)
   df$midpoint <- (df$start+df$end)/2
   df
